@@ -30,42 +30,10 @@ col1, col2 = st.columns(2)
 with col1:
     st.write("**Area Chart** con numero di lezioni per ogni slot di tempo")
     if st.session_state["connection"]:
-        query = "SELECT Giorno, OraInizio, Durata FROM programma"
+        query = "SELECT OraInizio, COUNT(*) AS NumeroLezioni FROM programma GROUP BY OraInizio"
         data = execute_query(st.session_state["connection"],query)
-        
-        df = pd.DataFrame(data)
-
-        # Converti le colonne temporali
-        df["OraInizio"] = pd.to_datetime(df["OraInizio"]).dt.time
-        df["Durata_min"] = df["Durata"]
-
-        time_slots = generate_time_slots()
-
-        # Creazione delle tab per ogni giorno
-        giorni_settimana = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì"]
-        tabs = st.tabs(giorni_settimana)
-
-        for i, giorno in enumerate(giorni_settimana):
-            with tabs[i]:
-                # Filtra i dati per il giorno corrente
-                day_df = df[df["Giorno"] == giorno]
-                
-                if not day_df.empty:
-                    # Calcola i corsi per fascia oraria
-                    count_per_slot = count_courses_per_slot(day_df, time_slots)
-                    
-                    # Crea il DataFrame per il grafico
-                    chart_data = pd.DataFrame({
-                        "Fascia Oraria": [t.strftime("%H:%M") for t in time_slots],
-                        "Corsi Attivi": count_per_slot,
-                    })
-                    
-                    # Mostra il grafico
-                    st.subheader(f"Corsi attivi - {giorno}")
-                    st.area_chart(chart_data.set_index("Fascia Oraria"))
-                else:
-                    st.write(f"Nessun corso programmato per {giorno}")
-
+        st.area_chart(data=data, x = "OraInizio", y = "NumeroLezioni")
+    
     else:
         st.write(":red[Connettiti al DB] prima di poter visualizzare il grafico!")
 
@@ -73,8 +41,8 @@ with col1:
 with col2:
     if st.session_state["connection"]:
         st.write("**Bar Chart** con numero di lezioni per ogni giorno della settimana")
-        query2 = "SELECT Giorno, COUNT(*) AS numLezioni FROM programma GROUP BY Giorno"
+        query2 = "SELECT Giorno, COUNT(*) AS NumeroLezioni FROM programma GROUP BY Giorno"
         data2 = execute_query(st.session_state["connection"],query2)
-        st.bar_chart(data = data2, x="Giorno", y = "numLezioni")
+        st.bar_chart(data = data2, x="Giorno", y = "NumeroLezioni")
     else:
         st.write(":red[Connettiti al DB] prima di poter visualizzare il grafico!")
