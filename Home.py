@@ -1,8 +1,7 @@
 import streamlit as st
-import numpy as np
-import pandas as pd
+#import numpy as np
+#import pandas as pd
 from utils.utils import *
-from datetime import datetime, timedelta
 
 st.set_page_config(
     page_title="Homework 4 - Basi di Dati",
@@ -25,6 +24,8 @@ if "connection" not in st.session_state.keys():
 
 check_connection()
 
+st.title(":blue[Punto]1️⃣ - Uso di Area Chart e Bar Chart")
+
 col1, col2 = st.columns(2)
 
 with col1:
@@ -33,7 +34,7 @@ with col1:
         query = "SELECT OraInizio, COUNT(*) AS NumeroLezioni FROM programma GROUP BY OraInizio"
         data = execute_query(st.session_state["connection"],query)
         st.area_chart(data=data, x = "OraInizio", y = "NumeroLezioni")
-    
+
     else:
         st.write(":red[Connettiti al DB] prima di poter visualizzare il grafico!")
 
