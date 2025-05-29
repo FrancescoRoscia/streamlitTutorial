@@ -36,7 +36,7 @@ with col1:
         st.area_chart(data=data, x = "OraInizio", y = "NumeroLezioni")
 
     else:
-        st.write(":red[Connettiti al DB] prima di poter visualizzare il grafico!")
+        st.error(":red[Connettiti al DB] prima di poter visualizzare il grafico!")
 
 
 with col2:
@@ -46,4 +46,4 @@ with col2:
         data2 = execute_query(st.session_state["connection"],query2)
         st.bar_chart(data = data2, x="Giorno", y = "NumeroLezioni")
     else:
-        st.write(":red[Connettiti al DB] prima di poter visualizzare il grafico!")
+        st.error(":red[Connettiti al DB] prima di poter visualizzare il grafico!")
